@@ -1,0 +1,8 @@
+I assume that the columns are sorted, but the rows are not. This is an example of such array:
+
+1	5	2
+5	7	3
+8	9	15
+19	30	27
+
+In this case it will be best to perform binary search on every column. With the complexity of binary search being O(log n) and cycling through all columns - O(m) the complexity of the algorithm should be O(m * log n)

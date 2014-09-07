@@ -1,4 +1,4 @@
-package homework5;
+package sap5homework;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,57 +21,27 @@ public class Main {
 			int[] furthestPair = { Integer.MIN_VALUE, Integer.MAX_VALUE };
 			hasPairs = false;
 			for (int i = 97; i < 123; i++) {
-				char compareTo = (char) i;
-				List<Integer> matches = new ArrayList<Integer>();
-				for (int j = 0; j < s.length(); j++) {
-					if (s.charAt(j) == compareTo) {
-						matches.add(j);
-					}
-				}
+				char currentLetter = (char) i;
+				List<Integer> matches = checkForMatches(currentLetter, s);
 				if (matches.size() > 1) {
 					hasPairs = true;
-					int[] furthest = median(matches);
-					if (contains(furthestPair, furthest)) {
-						furthestPair = furthest;
-					} else if (contains(furthest, furthestPair)) {
-						continue;
-					} else if (furthestPair[1] - furthestPair[0] < furthest[1]
-							- furthest[0]) {
-						furthestPair = furthest;
-					} else if (furthestPair[1] - furthestPair[0] == furthest[1]
-							- furthest[0]
-							&& furthest[0] < furthestPair[0]) {
-						furthestPair = furthest;
+					int[] contenderPair = median(matches);
+					if (isNewBestPair(furthestPair, contenderPair)) {
+						furthestPair = contenderPair;
 					}
 				}
 			}
-			char compareTo = '_';
-			List<Integer> matches = new ArrayList<Integer>();
-			for (int j = 0; j < s.length(); j++) {
-				if (s.charAt(j) == compareTo) {
-					matches.add(j);
-				}
-			}
+			List<Integer> matches = checkForMatches('_', s);
 			if (matches.size() > 1) {
 				hasPairs = true;
-				int[] furthest = median(matches);
-				if (contains(furthestPair, furthest)) {
-					furthestPair = furthest;
-				} else if (contains(furthest, furthestPair)) {
-					continue;
-				} else if (furthestPair[1] - furthestPair[0] < furthest[1]
-						- furthest[0]) {
-					furthestPair = furthest;
-				} else if (furthestPair[1] - furthestPair[0] == furthest[1]
-						- furthest[0]
-						&& furthest[0] < furthestPair[0]) {
-					furthestPair = furthest;
+				int[] contenderPair = median(matches);
+				if (isNewBestPair(furthestPair, contenderPair)) {
+					furthestPair = contenderPair;
 				}
 			}
 			if (hasPairs) {
 				s = changePos(furthestPair[0], furthestPair[1], s);
 			}
-			System.out.println(s);
 		}
 		System.out.println(s.split("_")[0]);
 	}
@@ -94,9 +64,9 @@ public class Main {
 		return a1[0] < a2[0] && a1[1] > a2[1];
 	}
 
-	public static String changePos(int pos1, int pos2, String huehue) {
+	public static String changePos(int pos1, int pos2, String s) {
 		char value;
-		StringBuilder sb = new StringBuilder(huehue);
+		StringBuilder sb = new StringBuilder(s);
 		value = sb.charAt(pos1);
 		sb.deleteCharAt(pos2);
 		sb.deleteCharAt(pos1);
@@ -104,4 +74,30 @@ public class Main {
 		return sb.toString();
 	}
 
+	public static List<Integer> checkForMatches(char currentLetter, String s) {
+		List<Integer> matches = new ArrayList<Integer>();
+		for (int i = 0; i < s.length(); i++) {
+			if (s.charAt(i) == currentLetter) {
+				matches.add(i);
+			}
+		}
+		return matches;
+	}
+
+	public static boolean isNewBestPair(int[] oldPair, int[] newPair) {
+		if (contains(oldPair, newPair)) {
+			return true;
+		}
+		if (contains(newPair, oldPair)) {
+			return false;
+		}
+		if (oldPair[1] - oldPair[0] < newPair[1] - newPair[0]) {
+			return true;
+		}
+		if (oldPair[1] - oldPair[0] == newPair[1] - newPair[0]
+				&& oldPair[0] > newPair[0]) {
+			return true;
+		}
+		return false;
+	}
 }
